@@ -5,5 +5,5 @@
 ## Features
 
 - Arbitrary Code Execution
-- Reading arbitrary files
+- Operating arbitrary files
 - Access arbitrary http endpoint

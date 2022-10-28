@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"os/exec"
@@ -10,7 +11,8 @@ import (
 )
 
 type Argument struct {
-	Arg string `json:"arg" binding:"required"`
+	Arg  string `json:"arg" binding:"required"`
+	Arg2 string `json:"arg2"`
 }
 
 func main() {
@@ -73,27 +75,105 @@ func main() {
 		}
 	})
 
-	r.POST("/raf", func(c *gin.Context) {
-		var form Argument
-		if err := c.Bind(&form); err != nil {
-			c.JSON(400, gin.H{
-				"error": "failed to parse param",
+	f := r.Group("/file")
+	{
+		f.POST("/create", func(c *gin.Context) {
+			var form Argument
+			if err := c.Bind(&form); err != nil {
+				c.JSON(400, gin.H{
+					"error": "failed to parse param",
+				})
+				return
+			}
+			file, err := os.OpenFile(form.Arg, os.O_CREATE, 0666)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": err,
+				})
+				return
+			}
+			defer file.Close()
+			c.JSON(200, gin.H{
+				"arg":    form.Arg,
+				"result": "OK",
 			})
-			return
-		}
-		out, err := os.ReadFile(form.Arg)
-		if err != nil {
-			c.JSON(500, gin.H{
-				"arg":   form.Arg,
-				"error": err,
-			})
-			return
-		}
-		c.JSON(200, gin.H{
-			"arg":    form.Arg,
-			"result": string(out),
 		})
-	})
+
+		f.POST("/read", func(c *gin.Context) {
+			var form Argument
+			if err := c.Bind(&form); err != nil {
+				c.JSON(400, gin.H{
+					"error": "failed to parse param",
+				})
+				return
+			}
+			out, err := os.ReadFile(form.Arg)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": err,
+				})
+				return
+			}
+			c.JSON(200, gin.H{
+				"arg":    form.Arg,
+				"result": string(out),
+			})
+		})
+
+		f.POST("/append", func(c *gin.Context) {
+			var form Argument
+			if err := c.Bind(&form); err != nil {
+				c.JSON(400, gin.H{
+					"error": "failed to parse param",
+				})
+				return
+			}
+			if len(form.Arg2) == 0 {
+				c.JSON(400, gin.H{
+					"error": "arg2 length is 0",
+				})
+				return
+			}
+			file, err := os.OpenFile(form.Arg, os.O_WRONLY|os.O_APPEND, 0666)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": err,
+				})
+				return
+			}
+			defer file.Close()
+			fmt.Fprintln(file, form.Arg2)
+			c.JSON(200, gin.H{
+				"arg":    form.Arg,
+				"result": "OK",
+			})
+		})
+
+		f.POST("/delete", func(c *gin.Context) {
+			var form Argument
+			if err := c.Bind(&form); err != nil {
+				c.JSON(400, gin.H{
+					"error": "failed to parse param",
+				})
+				return
+			}
+			err := os.Remove(form.Arg)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": err,
+				})
+				return
+			}
+			c.JSON(200, gin.H{
+				"arg":    form.Arg,
+				"result": "OK",
+			})
+		})
+	}
 
 	if err := r.Run(); err != nil {
 		panic(err)

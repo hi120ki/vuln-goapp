@@ -11,6 +11,21 @@ ping: ## ping
 ace: ## Arbitrary Code Execution : whoami
 	http http://localhost:8080/ace arg="whoami"
 
-.PHONY: raf
-raf: ## Reading arbitrary files : /etc/passwd
-	http http://localhost:8080/raf arg="/etc/passwd"
+.PHONY: read
+read: ## Reading arbitrary files : /etc/passwd
+	http http://localhost:8080/file/read arg="/etc/passwd"
+
+.PHONY: create
+create: ## Create file : /etc/passwd
+	http http://localhost:8080/file/create arg="/etc/passwd"
+
+.PHONY: append
+append: ## append : /app/tmp
+	http http://localhost:8080/file/create arg="/app/tmp"
+	http http://localhost:8080/file/append arg="/app/tmp" arg2="test"
+	http http://localhost:8080/file/read arg="/app/tmp"
+
+.PHONY: delete
+delete: ## delete : /app/tmp
+	http http://localhost:8080/file/create arg="/app/tmp"
+	http http://localhost:8080/file/delete arg="/app/tmp"
