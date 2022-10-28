@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -11,8 +13,8 @@ import (
 )
 
 type Argument struct {
-	Arg  string `json:"arg" binding:"required"`
-	Arg2 string `json:"arg2"`
+	Arg  string `json:"arg" form:"arg" binding:"required"`
+	Arg2 string `json:"arg2" form:"arg2"`
 }
 
 func main() {
@@ -175,6 +177,82 @@ func main() {
 		})
 	}
 
+	h := r.Group("/http")
+	{
+		h.POST("/get", func(c *gin.Context) {
+			var form Argument
+			if err := c.Bind(&form); err != nil {
+				c.JSON(400, gin.H{
+					"error": "failed to parse param",
+				})
+				return
+			}
+			client := &http.Client{
+				CheckRedirect: func(req *http.Request, via []*http.Request) error {
+					return http.ErrUseLastResponse
+				},
+			}
+			resp, err := client.Get(form.Arg)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": err,
+				})
+				return
+			}
+			defer resp.Body.Close()
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": err,
+				})
+				return
+			}
+			c.JSON(200, gin.H{
+				"arg":    form.Arg,
+				"status": resp.Status,
+				"result": string(body),
+			})
+		})
+
+		h.POST("/json", func(c *gin.Context) {
+			var form Argument
+			if err := c.Bind(&form); err != nil {
+				c.JSON(400, gin.H{
+					"error": "failed to parse param",
+				})
+				return
+			}
+			client := &http.Client{
+				CheckRedirect: func(req *http.Request, via []*http.Request) error {
+					return http.ErrUseLastResponse
+				},
+			}
+			resp, err := client.Post(form.Arg, "application/json", bytes.NewBuffer([]byte(form.Arg2)))
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": err,
+				})
+				return
+			}
+			defer resp.Body.Close()
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": err,
+				})
+				return
+			}
+			c.JSON(200, gin.H{
+				"arg":    form.Arg,
+				"status": resp.Status,
+				"result": string(body),
+			})
+		})
+	}
 	if err := r.Run(); err != nil {
 		panic(err)
 	}

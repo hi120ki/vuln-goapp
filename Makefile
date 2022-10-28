@@ -9,23 +9,31 @@ ping: ## ping
 
 .PHONY: ace
 ace: ## Arbitrary Code Execution : whoami
-	http http://localhost:8080/ace arg="whoami"
+	http POST http://localhost:8080/ace arg="whoami"
 
 .PHONY: read
-read: ## Reading arbitrary files : /etc/passwd
-	http http://localhost:8080/file/read arg="/etc/passwd"
+read: ## read file : /etc/passwd
+	http POST http://localhost:8080/file/read arg="/etc/passwd"
 
 .PHONY: create
-create: ## Create file : /app/tmp
-	http http://localhost:8080/file/create arg="/app/tmp"
+create: ## create file : /app/tmp
+	http POST http://localhost:8080/file/create arg="/app/tmp"
 
 .PHONY: append
-append: ## append : /app/tmp
-	http http://localhost:8080/file/create arg="/app/tmp"
-	http http://localhost:8080/file/append arg="/app/tmp" arg2="test"
-	http http://localhost:8080/file/read arg="/app/tmp"
+append: ## append file : /app/tmp
+	http POST http://localhost:8080/file/create arg="/app/tmp"
+	http POST http://localhost:8080/file/append arg="/app/tmp" arg2="test"
+	http POST http://localhost:8080/file/read arg="/app/tmp"
 
 .PHONY: delete
-delete: ## delete : /app/tmp
-	http http://localhost:8080/file/create arg="/app/tmp"
-	http http://localhost:8080/file/delete arg="/app/tmp"
+delete: ## delete file : /app/tmp
+	http POST http://localhost:8080/file/create arg="/app/tmp"
+	http POST http://localhost:8080/file/delete arg="/app/tmp"
+
+.PHONY: get
+get: ## http get : http://httpbin.org/get
+	http POST http://localhost:8080/http/get arg="http://httpbin.org/get"
+
+.PHONY: json
+json: ## http post : http://httpbin.org/post
+	http -f POST http://localhost:8080/http/json arg="http://httpbin.org/post" arg2='{"token":"abcd"}'
