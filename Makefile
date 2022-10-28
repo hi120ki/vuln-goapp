@@ -8,5 +8,9 @@ ping: ## ping
 	http http://localhost:8080/ping
 
 .PHONY: ace
-ace: ## ace
+ace: ## Arbitrary Code Execution : whoami
 	http http://localhost:8080/ace arg="whoami"
+
+.PHONY: raf
+raf: ## Reading arbitrary files : /etc/passwd
+	http http://localhost:8080/raf arg="/etc/passwd"

@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"os/exec"
 
 	"github.com/gin-gonic/gin"
@@ -70,6 +71,28 @@ func main() {
 				"result": string(out),
 			})
 		}
+	})
+
+	r.POST("/raf", func(c *gin.Context) {
+		var form Argument
+		if err := c.Bind(&form); err != nil {
+			c.JSON(400, gin.H{
+				"error": "failed to parse param",
+			})
+			return
+		}
+		out, err := os.ReadFile(form.Arg)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"arg":   form.Arg,
+				"error": err,
+			})
+			return
+		}
+		c.JSON(200, gin.H{
+			"arg":    form.Arg,
+			"result": string(out),
+		})
 	})
 
 	if err := r.Run(); err != nil {
