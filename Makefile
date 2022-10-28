@@ -16,8 +16,8 @@ read: ## Reading arbitrary files : /etc/passwd
 	http http://localhost:8080/file/read arg="/etc/passwd"
 
 .PHONY: create
-create: ## Create file : /etc/passwd
-	http http://localhost:8080/file/create arg="/etc/passwd"
+create: ## Create file : /app/tmp
+	http http://localhost:8080/file/create arg="/app/tmp"
 
 .PHONY: append
 append: ## append : /app/tmp
