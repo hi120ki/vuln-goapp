@@ -24,11 +24,7 @@ RUN addgroup appgroup && adduser --disabled-password --no-create-home appuser -G
 
 WORKDIR /app
 
-COPY --from=build-stage /app/vuln-goapp .
-
-RUN chown -R appuser:appgroup /app
-
-RUN chmod +x ./vuln-goapp
+COPY --chown=appuser:appgroup --from=build-stage /app/vuln-goapp .
 
 USER appuser
 
