@@ -1,9 +1,9 @@
 ARG GO_VERSION=1.19
-ARG ALPINE_VERSION=3.16
+ARG DEBIAN_VERSION=buster
 
 # build-stage
 
-FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} as build-stage
+FROM golang:${GO_VERSION}-${DEBIAN_VERSION} as build-stage
 
 WORKDIR /app
 
@@ -18,9 +18,14 @@ RUN go build
 
 # roduction-stage
 
-FROM alpine:${ALPINE_VERSION} as production-stage
+FROM debian:${DEBIAN_VERSION} as production-stage
 
-RUN addgroup appgroup && adduser --disabled-password --no-create-home appuser -G appgroup
+ARG USERNAME=user
+ARG GROUPNAME=user
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g $GID $GROUPNAME && \
+    useradd -m -s /bin/bash -u $UID -g $GID $USERNAME
 
 WORKDIR /app
 
@@ -28,6 +33,6 @@ COPY --chown=appuser:appgroup --from=build-stage /app/vuln-goapp .
 
 RUN chown -R appuser:appgroup /app
 
-USER appuser
+USER $USERNAME
 
 CMD ./vuln-goapp
