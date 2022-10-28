@@ -20,14 +20,8 @@ RUN go build
 
 FROM alpine:${ALPINE_VERSION} as production-stage
 
-RUN addgroup appgroup && adduser --disabled-password --no-create-home appuser -G appgroup
-
 WORKDIR /app
 
-COPY --chown=appuser:appgroup --from=build-stage /app/vuln-goapp .
-
-RUN chown -R appuser:appgroup /app
-
-USER appuser
+COPY --from=build-stage /app/vuln-goapp .
 
 CMD ./vuln-goapp
