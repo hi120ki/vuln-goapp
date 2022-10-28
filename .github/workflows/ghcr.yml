@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "main"
+      - "debian"
     tags:
       - "v*"
   pull_request:
