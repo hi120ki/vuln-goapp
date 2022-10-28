@@ -38,7 +38,7 @@ func main() {
 		if err != nil {
 			c.JSON(500, gin.H{
 				"arg":   form.Arg,
-				"error": err,
+				"error": fmt.Sprint(err),
 			})
 			return
 		}
@@ -53,7 +53,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
@@ -66,7 +66,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
@@ -91,7 +91,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
@@ -114,7 +114,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
@@ -142,7 +142,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
@@ -166,7 +166,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
@@ -196,7 +196,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
@@ -205,7 +205,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
@@ -233,7 +233,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
@@ -242,7 +242,7 @@ func main() {
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,
-					"error": err,
+					"error": fmt.Sprint(err),
 				})
 				return
 			}
