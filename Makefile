@@ -6,3 +6,7 @@ help: ## Print this help message
 .PHONY: ping
 ping: ## ping
 	http http://localhost:8080/ping
+
+.PHONY: ace
+ace: ## ace
+	http http://localhost:8080/ace arg="whoami"
