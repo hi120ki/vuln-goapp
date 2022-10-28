@@ -6,6 +6,7 @@ on:
     branches:
       - "main"
       - "debian"
+      - "root"
     tags:
       - "v*"
   pull_request:
