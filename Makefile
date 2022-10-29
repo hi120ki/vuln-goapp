@@ -37,13 +37,13 @@ download: ## download file : /app/tmp
 	rm robots.txt
 
 .PHONY: exec
-exec: ## exec file : /app/tmp
+exec: ## exec file : /app/hello
 	http POST http://localhost:8080/file/download arg="https://github.com/hi120ki/ctf4b-2022-testbin/raw/main/hello"
 	http POST http://localhost:8080/file/chmod arg="hello"
 	http POST http://localhost:8080/ace arg="./hello"
 
 .PHONY: tmp
-tmp: ## exec /tmp file : /app/tmp
+tmp: ## exec /tmp file : /tmp/hello
 	http POST http://localhost:8080/file/download arg="https://github.com/hi120ki/ctf4b-2022-testbin/raw/main/hello" arg2="/tmp"
 	http POST http://localhost:8080/file/chmod arg="/tmp/hello"
 	http POST http://localhost:8080/ace arg="/tmp/hello"
