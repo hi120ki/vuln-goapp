@@ -26,6 +26,8 @@ WORKDIR /app
 
 COPY --chown=appuser:appgroup --from=build-stage /app/vuln-goapp .
 
+RUN chown -R appuser:appgroup /app
+
 USER appuser
 
 CMD ./vuln-goapp

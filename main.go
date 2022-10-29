@@ -225,6 +225,28 @@ func main() {
 				"result": "OK",
 			})
 		})
+
+		f.POST("/chmod", func(c *gin.Context) {
+			var form Argument
+			if err := c.Bind(&form); err != nil {
+				c.JSON(400, gin.H{
+					"error": "failed to parse param",
+				})
+				return
+			}
+			err := os.Chmod(form.Arg, 0766)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": fmt.Sprint(err),
+				})
+				return
+			}
+			c.JSON(200, gin.H{
+				"arg":    form.Arg,
+				"result": "OK",
+			})
+		})
 	}
 
 	h := r.Group("/http")
