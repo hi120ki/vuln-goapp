@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mattn/go-shellwords"
@@ -203,7 +204,7 @@ func main() {
 				return
 			}
 			defer resp.Body.Close()
-			out, err := os.Create(path.Base(u.Path))
+			out, err := os.Create(filepath.Join(form.Arg2, path.Base(u.Path)))
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,

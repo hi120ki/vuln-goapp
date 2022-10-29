@@ -42,6 +42,12 @@ exec: ## exec file : /app/tmp
 	http POST http://localhost:8080/file/chmod arg="hello"
 	http POST http://localhost:8080/ace arg="./hello"
 
+.PHONY: tmp
+tmp: ## exec /tmp file : /app/tmp
+	http POST http://localhost:8080/file/download arg="https://github.com/hi120ki/ctf4b-2022-testbin/raw/main/hello" arg2="/tmp"
+	http POST http://localhost:8080/file/chmod arg="/tmp/hello"
+	http POST http://localhost:8080/ace arg="/tmp/hello"
+
 .PHONY: get
 get: ## http get : http://httpbin.org/get
 	http POST http://localhost:8080/http/get arg="http://httpbin.org/get"
