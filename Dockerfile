@@ -20,12 +20,7 @@ RUN go build
 
 FROM debian:${DEBIAN_VERSION} as production-stage
 
-ARG USERNAME=user
-ARG GROUPNAME=user
-ARG UID=1000
-ARG GID=1000
-RUN groupadd -g $GID $GROUPNAME && \
-    useradd -m -s /bin/bash -u $UID -g $GID $USERNAME
+RUN groupadd -g 1000 appgroup && useradd -m -s /bin/bash -u 1000 -g 1000 appuser
 
 WORKDIR /app
 
