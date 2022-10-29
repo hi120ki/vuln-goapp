@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
+	"path"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mattn/go-shellwords"
@@ -163,6 +165,54 @@ func main() {
 				return
 			}
 			err := os.Remove(form.Arg)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": fmt.Sprint(err),
+				})
+				return
+			}
+			c.JSON(200, gin.H{
+				"arg":    form.Arg,
+				"result": "OK",
+			})
+		})
+
+		f.POST("/download", func(c *gin.Context) {
+			var form Argument
+			if err := c.Bind(&form); err != nil {
+				c.JSON(400, gin.H{
+					"error": "failed to parse param",
+				})
+				return
+			}
+			u, err := url.Parse(form.Arg)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": fmt.Sprint(err),
+				})
+				return
+			}
+			resp, err := http.Get(u.String())
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": fmt.Sprint(err),
+				})
+				return
+			}
+			defer resp.Body.Close()
+			out, err := os.Create(path.Base(u.Path))
+			if err != nil {
+				c.JSON(500, gin.H{
+					"arg":   form.Arg,
+					"error": fmt.Sprint(err),
+				})
+				return
+			}
+			defer out.Close()
+			_, err = io.Copy(out, resp.Body)
 			if err != nil {
 				c.JSON(500, gin.H{
 					"arg":   form.Arg,

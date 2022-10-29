@@ -30,6 +30,12 @@ delete: ## delete file : /app/tmp
 	http POST http://localhost:8080/file/create arg="/app/tmp"
 	http POST http://localhost:8080/file/delete arg="/app/tmp"
 
+.PHONY: download
+download: ## download file : /app/tmp
+	http POST http://localhost:8080/file/download arg="https://hi120ki.github.io/blog/robots.txt"
+	cat robots.txt
+	rm robots.txt
+
 .PHONY: get
 get: ## http get : http://httpbin.org/get
 	http POST http://localhost:8080/http/get arg="http://httpbin.org/get"
